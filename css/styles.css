@@ -1,0 +1,21 @@
+* {
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: 'Roboto', sans-serif;
+}
+
+.card-contents {
+    display: flex;
+    width: 320px;
+    height: 160px;
+    margin: 2rem;
+    font-size: 1.3rem;
+    justify-content: center;
+    align-items: center;
+    background-color:LightSlateGray;
+    color: white;
+}
