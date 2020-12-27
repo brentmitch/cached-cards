@@ -26,6 +26,7 @@ export default class HTMLPutCache {
             console.log(`You've used ${percentageUsed}% of the available storage.`);
             const remaining = quota.quota - quota.usage;
             console.log(`You can write up to ${remaining} more bytes.`);
+            console.log('---------');
         }
     }
 

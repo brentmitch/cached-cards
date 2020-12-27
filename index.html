@@ -14,25 +14,22 @@
 </head>
 
 <body>
-    <header>
-        <h1>Storing HTML using Cache API</h1>
-    </header>
-    <main>
-        <section>
-            <p>Generates a random card each time the Next Name button is clicked. Stores the card's HTML in the
-                browser's cache.</p>
+    <div class="wrapper">
+        <header>
+            <h1>Storing HTML using Cache API</h1>
+            <p>Displays 10 randomly generated cards.</p>
             <p>When the browser's previous/next button is clicked, it retrieves the HTML from cache that the corresponds
-                to the query
-                parameters in the URL</p>
-        </section>
-        <section id="card" class='card'>
-            <div class="card-contents">
-                <p class="card-name">Press the Next Name Button</p>
-            </div>
-        </section>
-        <button id="nextName">Next Name</button>
-    </main>
-
+                to the query parameters in the URL</p>
+        </header>
+        <main>
+            <section id="card" class='card'>
+                <div class="card-contents">
+                    <p class="card-name">Press some buttons.</p>
+                </div>
+            </section>
+            <div id="cardControls"></div>
+        </main>
+    </div>
     <script src="./script/cards.js" type="module"></script>
 </body>
 

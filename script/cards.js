@@ -1,7 +1,7 @@
 
 
 import HTMLPutCache from './html-put-cache.js'
-import { randomInt0ToX } from './utilities.js'
+import { randomInt0ToX, getURLQueryParameters } from './utilities.js'
 
 const adjectvies = [
     'Attractive',
@@ -65,32 +65,71 @@ const randomName = function () {
 }
 
 const storeCard = async function (cache, cardSelector) {
-    const cardHTML = document.querySelector(cardSelector).innerHTML;
+    const cardHTML = document.getElementById(cardSelector).innerHTML;
     await cache.addItem(window.location, cardHTML);
 }
 
 const replaceCardContentsFromCache = async function (cardSelector, cache) {
-    const card = document.querySelector(cardSelector);
+    const card = document.getElementById(cardSelector);
     const cardHTML = await cache.getItem(window.location);
     card.innerHTML = cardHTML;
 }
 
-const updateCardContents = function (cardSelector, name) {
-    const cardContents = document.querySelector(`${cardSelector} .card-contents`);
-    cardContents.style.backgroundColor = colors[randomInt0ToX(10)];
-    cardContents.style.fontFamily = fonts[randomInt0ToX(10)];
-    cardContents.querySelector('.card-name').innerHTML = name;
+
+const showCard = function (cardItem, cardSelector) {
+    const cardContents = document.querySelector(`#${cardSelector} .card-contents`);
+    cardContents.style.backgroundColor = cardItem.backgroundColor;
+    cardContents.style.fontFamily = cardItem.fontFamily;
+    cardContents.querySelector('.card-name').innerHTML = cardItem.name;
 }
 
-const newName = function (cardSelector, cache) {
-    const name = randomName();
-    updateCardContents(cardSelector, name);
-    addNameToURL(name);
-    storeCard(cache, cardSelector);
+const generateCardList = function () {
+    const cardList = [];
+    let cardCount = 0;
+    while (cardCount < 10) {
+        const newCard = {
+            name: randomName(),
+            fontFamily: fonts[randomInt0ToX(10)],
+            backgroundColor: colors[randomInt0ToX(10)]
+        }
+
+        if (!cardList.some(item => item.name === newCard.name)) {
+            cardList.push(newCard);
+            cardCount += 1;
+        }
+    }
+    return cardList;
+}
+
+const addCardControls = function (controlsSelector, cardSelector, cardCache) {
+    const controls = document.getElementById(controlsSelector);
+    generateCardList().forEach((cardItem, index) => {
+        const button = document.createElement("button");
+        button.innerHTML = index + 1;
+        button.setAttribute('data-card', cardItem.name);
+        button.addEventListener('click', function () {
+            showCard(cardItem, cardSelector);
+            addNameToURL(cardItem.name);
+            storeCard(cardCache, cardSelector);
+        }, false);
+        controls.appendChild(button);
+    });
+}
+
+const updatePage = function (controlsSelector, cardSelector, cardCache) {
+    replaceCardContentsFromCache(cardSelector, cardCache);
+    const page = getURLQueryParameters()['page'];
+    // move focus to the corrsponding button
+    if (page) {
+        document.querySelector(`[data-card="${page}"]`).focus();
+    } else {
+        document.querySelectorAll(`#${controlsSelector} button`).forEach(item => item.blur());
+    }
 }
 
 const initializeApp = async function () {
-    const cardSelector = '#card';
+    const cardSelector = 'card';
+    const controlsSelector = 'cardControls';
     const cardCache = new HTMLPutCache('cardCache');
     await cardCache.init();
 
@@ -105,14 +144,11 @@ const initializeApp = async function () {
     // store the initial (instructions) card
     storeCard(cardCache, cardSelector);
 
+    addCardControls(controlsSelector, cardSelector, cardCache);
+
     // listen for window's url to change
     window.addEventListener('popstate', () => {
-        replaceCardContentsFromCache(cardSelector, cardCache);
-    });
-
-    // listen for next name button click
-    document.getElementById('nextName').addEventListener('click', () => {
-        newName(cardSelector, cardCache);
+        updatePage(controlsSelector, cardSelector, cardCache);
     });
 
 }
