@@ -1,5 +1,11 @@
 # cached-cards
-Explores how to use the Cache API's put method to store generated HTML
+Explores using the Cache API's put method to store generated HTML
+
+## About ##
+
+Generates a random card each time the Next Name button is clicked. Stores the card's HTML in the browser's cache.
+
+When the browser's previous/next button is clicked, it retrieves the HTML from cache that the corresponds to the query parameters in the URL
 ## More information about Cache API
 
 * MDN [Cache API](https://developer.mozilla.org/en-US/docs/Web/API/Cache)
